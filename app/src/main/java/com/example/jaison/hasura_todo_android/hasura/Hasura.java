@@ -3,7 +3,6 @@ package com.example.jaison.hasura_todo_android.hasura;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-import com.example.jaison.hasura_todo_android.models.AuthRequest;
 import com.example.jaison.hasura_todo_android.models.AuthResponse;
 
 import okhttp3.OkHttpClient;
@@ -17,21 +16,18 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class Hasura {
 
-    public static final Hasura instance = new Hasura();
+    static String PREFS_NAME = "PrefsName";
+    static String USERID = "userId";
+    static String ROLE = "role";
+    static String SESSIONID = "sessionId";
+
 
     public static HasuraAuthInterface auth;
     public static HasuraDBInterface db;
 
-    private String authtoken;
-    private Integer sessionId;
-    private String[] roles;
-
-    private static Context context;
-
     private static SharedPreferences sharedPreferences;
 
-    public static void initialise(Context c) {
-        context = c;
+    public static void initialise(Context context) {
         sharedPreferences = context.getSharedPreferences(PREFS_NAME,Context.MODE_PRIVATE);
 
         HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
@@ -41,7 +37,6 @@ public class Hasura {
                 .addInterceptor(new HasuraTokenInterceptor())
                 .addInterceptor(logging)
                 .build();
-
 
         final Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(Endpoint.AUTH_URL)
@@ -59,13 +54,6 @@ public class Hasura {
 
         db = retrofitDB.create(HasuraDBInterface.class);
     }
-
-
-    static String PREFS_NAME = "PrefsName";
-    static String USERID = "userId";
-    static String ROLE = "role";
-    static String SESSIONID = "sessionId";
-
 
     public static void setSession(int userId, String sessionId) {
         SharedPreferences.Editor editor = sharedPreferences.edit();

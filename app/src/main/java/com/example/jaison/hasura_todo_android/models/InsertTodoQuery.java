@@ -36,6 +36,7 @@ public class InsertTodoQuery {
 
         @SerializedName("objects")
         List<TodoRecord> objects;
+
     }
 
 }

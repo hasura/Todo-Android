@@ -74,7 +74,7 @@ public class ToDoActivity extends BaseActivity {
             MessageResponse messageResponse = new Gson().fromJson(error.string(), MessageResponse.class);
             showErrorAlert(messageResponse.getMessage(),null);
             if (messageResponse.getMessage().contentEquals("invalid authorization token"))
-                handleUserLogOut();
+                completeUserLogout();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -218,7 +218,7 @@ public class ToDoActivity extends BaseActivity {
                             public void onResponse(Call<MessageResponse> call, Response<MessageResponse> response) {
                                 hideProgressIndicator();
                                 if (response.isSuccessful()) {
-                                    handleUserLogOut();
+                                    completeUserLogout();
                                 } else {
                                     handleError(response.errorBody());
                                 }
@@ -238,7 +238,7 @@ public class ToDoActivity extends BaseActivity {
         return false;
     }
 
-    private void handleUserLogOut() {
+    private void completeUserLogout() {
         Hasura.clearSession();
         AuthenticationActivity.startActivity(ToDoActivity.this);
     }

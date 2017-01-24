@@ -62,57 +62,65 @@ public class AuthenticationActivity extends BaseActivity implements View.OnClick
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.signInButton:
-                showProgressIndicator();
-                Hasura.auth.login(new AuthRequest(username.getText().toString(), password.getText().toString())).enqueue(new Callback<AuthResponse>() {
-                    @Override
-                    public void onResponse(Call<AuthResponse> call, Response<AuthResponse> response) {
-                        hideProgressIndicator();
-                        if (response.isSuccessful()) {
-                            Hasura.setSession(response.body());
-                            ToDoActivity.startActivity(AuthenticationActivity.this);
-                        } else {
-                            try {
-                                MessageResponse messageResponse = new Gson().fromJson(response.errorBody().string(), MessageResponse.class);
-                                Toast.makeText(AuthenticationActivity.this, messageResponse.getMessage(), Toast.LENGTH_LONG).show();
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(Call<AuthResponse> call, Throwable t) {
-                        hideProgressIndicator();
-                        Toast.makeText(AuthenticationActivity.this, "Something went wrong, please ensure that you have a working internet connection", Toast.LENGTH_LONG).show();
-                    }
-                });
+                handleLogin();
                 break;
             case R.id.registerButton:
-                showProgressIndicator();
-                Hasura.auth.register(new AuthRequest(username.getText().toString(), password.getText().toString())).enqueue(new Callback<AuthResponse>() {
-                    @Override
-                    public void onResponse(Call<AuthResponse> call, Response<AuthResponse> response) {
-                        hideProgressIndicator();
-                        if (response.isSuccessful()) {
-                            Hasura.setSession(response.body());
-                            ToDoActivity.startActivity(AuthenticationActivity.this);
-                        } else {
-                            try {
-                                MessageResponse messageResponse = new Gson().fromJson(response.errorBody().string(), MessageResponse.class);
-                                Toast.makeText(AuthenticationActivity.this, messageResponse.getMessage(), Toast.LENGTH_LONG).show();
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(Call<AuthResponse> call, Throwable t) {
-                        hideProgressIndicator();
-                        Toast.makeText(AuthenticationActivity.this, "Something went wrong, please ensure that you have a working internet connection", Toast.LENGTH_LONG).show();
-                    }
-                });
+                handleRegistration();
                 break;
         }
+    }
+
+    private void handleLogin() {
+        showProgressIndicator();
+        Hasura.auth.login(new AuthRequest(username.getText().toString(), password.getText().toString())).enqueue(new Callback<AuthResponse>() {
+            @Override
+            public void onResponse(Call<AuthResponse> call, Response<AuthResponse> response) {
+                hideProgressIndicator();
+                if (response.isSuccessful()) {
+                    Hasura.setSession(response.body());
+                    ToDoActivity.startActivity(AuthenticationActivity.this);
+                } else {
+                    try {
+                        MessageResponse messageResponse = new Gson().fromJson(response.errorBody().string(), MessageResponse.class);
+                        Toast.makeText(AuthenticationActivity.this, messageResponse.getMessage(), Toast.LENGTH_LONG).show();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<AuthResponse> call, Throwable t) {
+                hideProgressIndicator();
+                Toast.makeText(AuthenticationActivity.this, "Something went wrong, please ensure that you have a working internet connection", Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    private void handleRegistration() {
+        showProgressIndicator();
+        Hasura.auth.register(new AuthRequest(username.getText().toString(), password.getText().toString())).enqueue(new Callback<AuthResponse>() {
+            @Override
+            public void onResponse(Call<AuthResponse> call, Response<AuthResponse> response) {
+                hideProgressIndicator();
+                if (response.isSuccessful()) {
+                    Hasura.setSession(response.body());
+                    ToDoActivity.startActivity(AuthenticationActivity.this);
+                } else {
+                    try {
+                        MessageResponse messageResponse = new Gson().fromJson(response.errorBody().string(), MessageResponse.class);
+                        Toast.makeText(AuthenticationActivity.this, messageResponse.getMessage(), Toast.LENGTH_LONG).show();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<AuthResponse> call, Throwable t) {
+                hideProgressIndicator();
+                Toast.makeText(AuthenticationActivity.this, "Something went wrong, please ensure that you have a working internet connection", Toast.LENGTH_LONG).show();
+            }
+        });
     }
 }
